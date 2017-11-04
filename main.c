@@ -111,21 +111,18 @@ void init_list(GtkWidget *list)
     renderer2 = gtk_cell_renderer_text_new();
     column2 = gtk_tree_view_column_new_with_attributes("ORDER", renderer2, "text", COL_RANKING, NULL);
     gtk_tree_view_column_set_sizing (column2, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-    //gtk_tree_view_column_add_attribute(column2, renderer2, "background", COLOR);
     gtk_tree_view_column_set_sort_column_id (column2, COL_RANKING);
     gtk_tree_view_append_column(GTK_TREE_VIEW(list_unique_visitors), column2);
  
     renderer2 = gtk_cell_renderer_text_new();
     column2 = gtk_tree_view_column_new_with_attributes("CLIENT IP", renderer2, "text", COL_HOST, NULL);
     gtk_tree_view_column_set_sizing (column2, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-    //gtk_tree_view_column_add_attribute(column2, renderer2, "background", COLOR);
     gtk_tree_view_append_column(GTK_TREE_VIEW(list_unique_visitors), column2);
  
     renderer2 = gtk_cell_renderer_text_new();
     column2 = gtk_tree_view_column_new_with_attributes("COUNT", renderer2, "text", COL_COUNT, NULL);
     gtk_tree_view_column_set_sizing (column2, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-    //gtk_tree_view_column_add_attribute(column2, renderer2, "background", COLOR);
-      gtk_tree_view_append_column(GTK_TREE_VIEW(list_unique_visitors), column2);
+    gtk_tree_view_append_column(GTK_TREE_VIEW(list_unique_visitors), column2);
 
     renderer2 = gtk_cell_renderer_progress_new();
     column2 = gtk_tree_view_column_new();
@@ -154,13 +151,11 @@ void init_list(GtkWidget *list)
     renderer_web_attacks = gtk_cell_renderer_text_new();
     column_web_attacks = gtk_tree_view_column_new_with_attributes("ATTACK", renderer_web_attacks, "text", COL_ATTACK_NAME, NULL);
     gtk_tree_view_column_set_sizing (column_web_attacks, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-    //gtk_tree_view_column_add_attribute(column_web_attacks2, renderer2, "background", COLOR);
     gtk_tree_view_append_column(GTK_TREE_VIEW(list_web_attacks), column_web_attacks);
  
     renderer_web_attacks = gtk_cell_renderer_text_new();
     column_web_attacks = gtk_tree_view_column_new_with_attributes("COUNT", renderer_web_attacks, "text", COL_ATTACK_COUNT, NULL);
     gtk_tree_view_column_set_sizing (column_web_attacks, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-    //gtk_tree_view_column_add_attribute(column_web_attacks, renderer_web_attacks, "background", COLOR);
     gtk_tree_view_append_column(GTK_TREE_VIEW(list_web_attacks), column_web_attacks);
 
     renderer_web_attacks = gtk_cell_renderer_progress_new();
@@ -186,7 +181,6 @@ void init_list(GtkWidget *list)
     renderer_total = gtk_cell_renderer_text_new();
     column_total_logs = gtk_tree_view_column_new_with_attributes("TOTAL", renderer_total, "text", COL_TOTAL_COUNT, NULL);
     gtk_tree_view_column_set_sizing (column_total_logs, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-    //gtk_tree_view_column_add_attribute(column_web_attacks2, renderer2, "background", COLOR);
     gtk_tree_view_append_column(GTK_TREE_VIEW(list_total_logs), column_total_logs);
 
  
@@ -240,15 +234,8 @@ block_ip (GtkTreeView        *treeview,
         }   
         else {
             sprintf(buf, "iptables -A INPUT -s %s -j DROP", name);
-            //printf("====> command =%s \n", buf);
-            //if(system(buf))
-            //    printf("success\n");
-            //else
-            //    printf("fail\n");
             system(buf);
-            gtk_list_store_set(store, &iter_selected,
-                                   COLOR, "Grey",
-                                   -1);
+            gtk_list_store_set(store, &iter_selected, COLOR, "Grey", -1);
         }
  
            g_free(name);
@@ -339,10 +326,8 @@ void gui()
 
     gtk_container_add (GTK_CONTAINER (vbox_analyzer), label_web_attacks);
     gtk_box_pack_start(GTK_BOX(vbox_analyzer), sw_web_attacks, TRUE, TRUE, 5);
-    //gtk_box_pack_end(GTK_BOX(vbox_analyzer), sw_web_attacks, TRUE, TRUE, 5);
 
-     gtk_container_add (GTK_CONTAINER (vbox_analyzer), label_total_logs);
-    //gtk_box_pack_start(GTK_BOX(vbox_analyzer), sw_total_logs, TRUE, TRUE, 5);
+    gtk_container_add (GTK_CONTAINER (vbox_analyzer), label_total_logs);
     gtk_box_pack_end(GTK_BOX(vbox_analyzer), sw_total_logs, TRUE, TRUE, 5);
  
  
@@ -362,7 +347,6 @@ void gui()
  
     gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), 0);
     gtk_widget_set_size_request(notebook, 1000, 500);
-    //gtk_widget_set_resizable (GTK_NOTEBOOK(notebook), TRUE);
  
     gtk_container_add(GTK_CONTAINER(window), grid);
 }
@@ -375,9 +359,7 @@ void *calculate_median()
     while(1) {
         sleep(5);
         now = (float)from_before_median_count / (float)5;
-        median = (float)(before_median + now) / (float)2;
-        //printf("\n\nis_ddos = %f\n\n", fabs(average-median));
-        //printf("\n\nmedian = %f\n\n", median);   
+        median = (float)(before_median + now) / (float)2;   
         from_before_median_count = 0;
         if( 0.8 < fabs(average-median))
             is_ddos = 1;
@@ -389,7 +371,6 @@ void *calculate_median()
 
 void tail()
 {
-    //char tail_string [20] = "tail -1 ";
     gchar *buf = (char*)malloc(sizeof(gchar)*TAILOUT_BUFLEN);
     char str[TAILOUT_BUFLEN];
     FILE * fp;
@@ -406,16 +387,11 @@ void tail()
         exit (1);
     }
 
-    //store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(list)));
-    //gtk_list_store_append(store, &iter);
-    //gtk_list_store_set(store, &iter, LOG_LINE, result, -1);
-
     while (fgets(str, TAILOUT_BUFLEN, fp) != NULL) {
         //printf("%s", str);
         //buf += result;
     }
  
-    //printf("%s", str);
  
     sprintf(buf, "%s", str);
     setLogline(buf);
@@ -441,8 +417,6 @@ void inotify_read_events(int fd)
         }
         i += EVENT_SIZE + event->len;
         count ++;
-//        tail();
-   
     }
 
     tail();
@@ -459,7 +433,6 @@ void *inotify_events_loop(void *data)
         printf("inotify events loop error\n");
         exit(1);
     }
-    //fd = *(int *)data;
    
     while(1) {
         pthread_mutex_trylock(&mutex);
@@ -508,7 +481,6 @@ main (int argc, char *argv[])
 
     if ((fd = inotify_init()) == -1) {
         perror("inotify_init");
-        //goto ERROR;
         return 1;
     }
 
@@ -554,4 +526,4 @@ main (int argc, char *argv[])
     close(fd);
 
     return 0;
-}   
+} 

@@ -10,20 +10,10 @@ analyze (GtkNotebook *notebook,
 {
     struct byIP *temp = head;
     int count = 1;
-   
-    //printf("%d\n", page_num);
  
     if(page_num == 0)
         return;
 
- 
-
-    //for(i=0; i<; i++)
-    //{
-    //    sum_logs+=temp->today;
-    //}
-    
-    //printf("> ip %s : %d\n", head->ip, head->count);
     gtk_list_store_clear(store2);
     gtk_list_store_clear(store_web_attacks);
     gtk_list_store_clear(store_total_logs);

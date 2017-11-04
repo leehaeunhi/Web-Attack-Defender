@@ -1,5 +1,3 @@
-/* compatibility for the unix/win32 sleep() function */
- 
 #ifndef __VI_SLEEP_H
 #define __VI_SLEEP_H
  
@@ -12,11 +10,7 @@
 #endif
  
 #endif /* __VI_SLEEP_H */
- 
- 
-//#define TAILOUT_BUFLEN 4096
- 
- 
+
 extern void setLogline(char * buf);
 extern void analyze (GtkNotebook *notebook,
          GtkWidget   *page,
@@ -106,3 +100,4 @@ enum {
     COL_TOTAL_COUNT,
     N_TOTAL_COLUMNS
 };  
+

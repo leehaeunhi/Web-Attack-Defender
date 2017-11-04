@@ -20,27 +20,14 @@ typedef struct logformat {
     char * code;
     char * bytes;
 }logformat;
-/*
-typedef struct byIP {
-    char ip[16];
-    int count;
-    long today;   
-    time_t startTime;
-    struct byIP *nextIP;
-}byIP;
-*/
+
 static count;
  
-//int log_count = 0;
 int ip_count = 0;
  
-//byIP *head = NULL;
 byIP *current = NULL;
 
 int last_byte = 0;
- 
-//GtkListStore *store;
-//GtkListStore *store2;
 
 void beep(void);
 
@@ -75,13 +62,11 @@ strcpy(text, req);
         if (strstr(tok, "'")||strstr(tok, ")")||strstr(tok, "%20")||strstr(tok, "%27")||strstr(tok, "+")||strstr(tok, "UNION"))
         {
             sql_injection++;
-            //printf("\n>SQL Injection\n");        // SQL ÀÎÁ§¼Ç °æ°í
             free(text);
             return 1;
         } else if (strstr(tok, "%00")||strstr(tok,"http")||strstr(tok, "/"))
         {
             rfi_lfi++;
-            //printf("\n>RFI\n");        // RFI °æ°í
             free(text);
             return 2;
         } else {
@@ -89,12 +74,9 @@ strcpy(text, req);
             return 0;
         }
     } else {
-        //printf("Á¤»ó\n");
         free(text);
         return 0;
     }
-   
-    //free(text);
 }
 
 static int parseBytes(char * req, char * bytes)
@@ -120,9 +102,7 @@ static int parseBytes(char * req, char * bytes)
         webshell++;
         free(text);
         return 1;
-/*    }else if (strstr(text, blacklist)) {
-        return 1;
-*/    }else {
+    }else {
         free(text);
         return 0;
     }
@@ -131,69 +111,7 @@ static int parseBytes(char * req, char * bytes)
 }
 
  
-/* function for parsing the date of log
- * date format: day/month/year:h:m:s */
- /*
-static char * parseTime(char * times)
-{
-    char * text = (char *)malloc((strlen(times)+1)*sizeof(char));
-    strcpy(text, times);
- 
-    char * day;        char * month;
-    char * year;        char * hour;
-    char * min;        char * sec;
- 
-    int month_num = 0;
-       
-        if(text == NULL) {
-            printf("parseTime text error");
-            exit(1);
-        }
- 
-//    strcat(time, "\0");
-//    printf("%s", time);
- 
-    day     = strtok(times, "/");
-    month     = strtok(NULL, "/");
-    year     = strtok(NULL, ":");
-    hour     = strtok(NULL, ":");
-    min     = strtok(NULL, ":");
-    sec     = strtok(NULL, " ");
-   
-    if(!strcmp(month, "Jan"))
-                month_num = 1;
-    else if(!strcmp(month, "Feb"))
-                month_num = 2;
-    else if(!strcmp(month, "Mar"))
-                month_num = 3;
-    else if(!strcmp(month, "Apr"))
-                month_num = 4;
-    else if(!strcmp(month, "May"))
-                month_num = 5;
-    else if(!strcmp(month, "Jun"))
-                month_num = 6;
-    else if(!strcmp(month, "Jul"))
-                month_num = 7;
-    else if(!strcmp(month, "Aug"))
-                month_num = 8;
-    else if(!strcmp(month, "Sep"))
-                month_num = 9;
-    else if(!strcmp(month, "Oct"))
-                month_num = 10;
-    else if(!strcmp(month, "Nov"))
-                month_num = 11;
-    else if(!strcmp(month, "Dec"))
-        month_num = 12;
- 
-    sprintf(text,"%s/%d/%s %s:%s:%s\t",year,month_num,day,hour,min,sec);
-//    sprintf(text,"%s:%s:%s",hour,min,sec);
-    printf("%s", text);
- 
-    return text;
-}
- */
 /* function for parsing the status code of log*/
- 
 static void parseCode(char * code)
 {
     int codenum;
@@ -202,10 +120,7 @@ static void parseCode(char * code)
         exit(1);
     }
     codenum = atoi(code);
-   
-    // ¹üÀ§¸¸ Ã³¸®ÇÑ´Ù¸é, if¹®À»
-    // ¸ðµç ÄÚµå¸¦ ´Ù Ã³¸®ÇÑ´Ù¸é, switch¹® ¾²´Â°Ô ÁÁÀ»µí
-   
+
     if(codenum < 200)
     {
         printf("Informatioinal\t");
@@ -222,27 +137,10 @@ static void parseCode(char * code)
     {
         printf("Server Error\t");
     }
- 
-//    printf("%d",codenum);
-}
- 
-/*
-struct byIP* create_byIP(char *host, time_t t)
-{
-    struct byIP* new_byIP = (struct byIP*)malloc(sizeof(struct byIP));
-   
-    strcpy(new_byIP->ip, host);
-    new_byIP->count = 1;
-    new_byIP->today = 1;
-    new_byIP->startTime = t;
-    new_byIP->nextIP = NULL;
- 
-    return new_byIP;
-}*/
+ }
  
 void insert_byIP(char *host, time_t t)
 {
-    //struct byIP* after = current->nextIP;
     struct byIP* after;       
    
     struct byIP* new_byIP = (struct byIP *)malloc(sizeof(struct byIP));
@@ -257,19 +155,17 @@ void insert_byIP(char *host, time_t t)
         exit(1);
     }
  
-    /* »õ ³ëµå¿¡ °ªÀ» ³Ö¾îÁØ´Ù. */
+    /* ìƒˆ ë…¸ë“œì— ê°’ì„ ë„£ì–´ì¤€ë‹¤. */
     strcpy(new_byIP->ip, host);
     new_byIP->count = 1;
     new_byIP->today = 1;
     new_byIP->startTime = t;
-    //new_byIP->nextIP = after;
      new_byIP->nextIP = NULL;
 
-    /* current ´Â ÀÌÁ¦ newNode ¸¦ °¡¸®Å°°Ô µÈ´Ù */
+    /* current ëŠ” ì´ì œ newNode ë¥¼ ê°€ë¦¬í‚¤ê²Œ ëœë‹¤ */
     current->nextIP = new_byIP;
  
     current = new_byIP;
-    //free(new_byIP);
 }
  
  
@@ -283,7 +179,6 @@ struct byIP* search_byIP(char *ip)
     }
  
     while(temp != NULL) {
-        //printf("1\n");
         if(!strcmp(ip, temp->ip)) {            
             return temp;
         }
@@ -316,7 +211,6 @@ void count_ip(char * host)
        
     // first IP
     if(ip_count == 0) {
-        //head = create_byIP(host, t1);
         new_byIP = (struct byIP*)malloc(sizeof(struct byIP));
            if(new_byIP == NULL) {
                printf("count_ip new_byIP error\n");
@@ -332,9 +226,7 @@ void count_ip(char * host)
          
         head = new_byIP;   
         current = head;
-    
-        //printf("> ip %s : %d\n", current->ip, current->count);
-    
+        
         ip_count++;
 
         return;
@@ -351,13 +243,11 @@ void count_ip(char * host)
            
         temp->count++;
         temp->today++;
-        //printf("> ip %s : %d\n", temp->ip, temp->count);
         return;
     }
    
     // new IP
     insert_byIP(host, t1);   
-    //printf("> ip %s : %d\n", current->ip, current->count);
     ip_count++;
     return;
 }
@@ -414,45 +304,6 @@ void setLogline(char * buf)
  
     bytes = strtok(NULL, "\"");
     if(bytes == NULL) return;
-//    trash = strtok(NULL, "\n");
- 
-    //printf("\n%s\t", ip);
-    //printf("%s\t", luser);
-    //printf("%s\t", user);
-//    printf("%s\n", time);
-//    parseTime(times);
-    //times = parseTime(times);
-
-
-//    strcat(time, "\0");
-//    printf("%s", time);
-
-/*    text         = (char *)malloc((strlen(times)+1)*sizeof(char));
-         
-        if(text == NULL) {
-            printf("setLogLine text error");
-            exit(1);
-        }
- 
-    
-    day     = strtok(times, "/");
-    month     = strtok(NULL, "/");
-    year     = strtok(NULL, ":");
-    hour     = strtok(NULL, ":");
-    min     = strtok(NULL, ":");
-    sec     = strtok(NULL, " ");
-   
-    sprintf(text,"%s/%s/%s %s:%s:%s\t",year,month,day,hour,min,sec);
-//    sprintf(text,"%s:%s:%s",hour,min,sec);
-    printf("%s", text);*/
-
-
-
-//    printf("%s\n", times);
-    //printf("%s\t", req);
-    //printf("%s: ", code);
-    //parseCode(code);
-    //printf("%s\n", bytes);
 
     count_ip(ip);
     is_rfi = parseReq(req);
@@ -473,7 +324,6 @@ void setLogline(char * buf)
                    -1);
     beep();
    
-//        system("./getflood.sh");
     } else if(is_rfi == 1) {
         store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(list)));
         gtk_list_store_prepend(store, &iter);
@@ -488,7 +338,6 @@ void setLogline(char * buf)
                    COLOR, "Sky Blue",
                    -1);
     beep();
-//        system("./rfi.sh");
     } else if(is_rfi == 2) {
         store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(list)));
         gtk_list_store_prepend(store, &iter);
@@ -503,7 +352,6 @@ void setLogline(char * buf)
                    COLOR, "Gold",
                    -1);
     beep();
-//        system("./rfi.sh");
     } else if(parseBytes(req, bytes) == 1) {
         store = GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(list)));
         gtk_list_store_prepend(store, &iter);
@@ -531,9 +379,6 @@ void setLogline(char * buf)
                    COLOR, "White",
                    -1);
     }
-        //free(text);
-    //fflush(stdout);
     gtk_scrolled_window_set_vadjustment(GTK_SCROLLED_WINDOW(sw), 0);   
     pthread_mutex_unlock(&mutex);
-    //printf("unlocked(%08x :: %d)..!\n", (int)ptid, lock_ret);
 }
