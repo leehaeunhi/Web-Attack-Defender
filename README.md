@@ -1,6 +1,8 @@
 # Web-Attack-Defender
 2017 캡스톤 디자인
 
+Detecting DDoS, SQL Injection, RFI, and Webshell upload realtime by analyzing the Apache web server access log in Linux environment.
+
 centOS7
 using C, GTK+3
 
